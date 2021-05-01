@@ -3,8 +3,6 @@ package orcawatch.model;
 import java.util.Calendar;
 import java.util.UUID;
 
-import orcawatch.model.Hydrophone;
-
 public class Signal {
     private UUID signalId;
     private Hydrophone hydrophone;

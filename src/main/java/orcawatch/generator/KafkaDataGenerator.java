@@ -11,15 +11,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.commons.lang3.StringUtils;
 
+import orcawatch.kafka.MessageProducer;
 import orcawatch.model.FrequencyRange;
 import orcawatch.model.Hydrophone;
 import orcawatch.model.IDataHelper;
 import orcawatch.model.Signal;
 
 
-public class FixtureGenerator {
+public class KafkaDataGenerator {
+    private static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    public static final String DEFAULT_TEST_TOPIC = "test";
+    public static final String DEFAULT_KAFKA_URL = "localhost:9092";
+    private String kafkaTopic ;
+    private String kafkaUrl ;
+
     List<Hydrophone> hydrophones;
 
     FrequencyRange freqOrca;
@@ -27,6 +37,15 @@ public class FixtureGenerator {
 
     List<Signal> signals;
     int numSignals = 10;
+
+    MessageProducer kafkaProducer = null ;
+
+    public KafkaDataGenerator() {
+        kafkaTopic = System.getProperty("kafka_topic", DEFAULT_TEST_TOPIC);
+        kafkaUrl = System.getProperty("kafka_url", DEFAULT_KAFKA_URL);
+        kafkaProducer = new MessageProducer(kafkaUrl, kafkaTopic);
+        Runtime.getRuntime().addShutdownHook(new Thread(kafkaProducer::closeProducer));
+    }
 
     List<Object> readInput(String filename, IDataHelper dataHelper) {
         List<Object> list = null;
@@ -69,7 +88,6 @@ public class FixtureGenerator {
                 (line) -> new FrequencyRange(splitLine(line))
         ).get(0);
 
-        signals = new ArrayList<>(numSignals);
         for (int i = 0; i < numSignals; ++i) {
             int hydrophoneIdx = ThreadLocalRandom.current().nextInt(hydrophones.size());
             int sigType = ThreadLocalRandom.current().nextInt(0, 2);
@@ -84,14 +102,22 @@ public class FixtureGenerator {
             }
             int freq = ThreadLocalRandom.current().nextInt(sigMin, sigMax);
 
-            signals.add(new Signal( hydrophones.get(hydrophoneIdx), freq));
-        }
+            Signal signalEvent = new Signal(hydrophones.get(hydrophoneIdx), freq);
 
-        signals.forEach(s -> System.out.println(s.toString()));
+            try {
+                kafkaProducer.sendMessage(kafkaTopic, toJson(signalEvent));
+            } catch (JsonProcessingException jpe) {
+                System.out.println(jpe);
+            }
+        }
+    }
+
+    String toJson(Signal signalEvent) throws JsonProcessingException {
+        return OBJECT_MAPPER.writeValueAsString(signalEvent);
     }
 
     public static void main(String[] args) {
-        FixtureGenerator fixtureGenerator = new FixtureGenerator();
+        KafkaDataGenerator fixtureGenerator = new KafkaDataGenerator();
         fixtureGenerator.generateData();
     }
 }

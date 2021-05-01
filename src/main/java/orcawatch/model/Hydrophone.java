@@ -10,6 +10,21 @@ public class Hydrophone {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof Hydrophone)) {
+            return false;
+        }
+
+        Hydrophone h = (Hydrophone) o;
+
+        return Float.compare(latitude, h.latitude) == 0 && Float.compare(longitude, h.longitude) == 0;
+    }
+
+    @Override
     public String toString() {
         return latitude + ", " + longitude;
     }
