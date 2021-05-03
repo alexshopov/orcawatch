@@ -1,9 +1,11 @@
-package orcawatch.model;
+package orcawatch.data;
 
 public class FrequencyRange {
     private int freqMin;
     private int freqMax;
     private int freqPeak;
+
+    public FrequencyRange() { }
 
     public FrequencyRange(String[] frequencies) {
         this.freqMin = Integer.parseInt(frequencies[0]);

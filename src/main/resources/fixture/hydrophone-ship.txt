@@ -1,2 +1,0 @@
-# Ship propeller cavitation range (min, max, peak)
-20,200,100

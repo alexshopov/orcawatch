@@ -1,6 +1,5 @@
 package orcawatch.kafka;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -15,7 +14,7 @@ import org.slf4j.LoggerFactory;
 public class MessageProducer {
     private static final Logger logger = LoggerFactory.getLogger(MessageProducer.class);
 
-    private Producer<byte[], byte[]>producer;
+    private Producer<byte[], byte[]> producer;
     private Properties props;
     private String topic;
     private String bootstrapUrl;

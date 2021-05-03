@@ -1,2 +1,0 @@
-# Orca freqency range (min, max, peak)
-500,25000,3

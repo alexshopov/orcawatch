@@ -30,6 +30,13 @@ task runMessageProducer(type: JavaExec) {
     group = "Execution"
     description = "Runs kafka message producer"
     classpath = sourceSets.main.runtimeClasspath
-    main = "orcawatch.generator.KafkaDataGenerator"
+    main = "orcawatch.data.KafkaDataGenerator"
 }
 
+task runConsumerStream(type: JavaExec) {
+    systemProperties = System.properties
+    group = "Execution"
+    description = "Runs kafka streams"
+    classpath = sourceSets.main.runtimeClasspath
+    main = "orcawatch.kafka.ConsumerStreams"
+}

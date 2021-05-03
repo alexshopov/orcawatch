@@ -1,12 +1,14 @@
-package orcawatch.model;
+package orcawatch.data;
 
 public class Hydrophone {
-    private float latitude;
-    private float longitude;
+    private String id;
+    private String latitude;
+    private String longitude;
 
     public Hydrophone(String[] coords) {
-        latitude = Float.parseFloat(coords[0]);
-        longitude = Float.parseFloat(coords[1]);
+        id = coords[0];
+        latitude = coords[1];
+        longitude = coords[2];
     }
 
     @Override
@@ -21,7 +23,7 @@ public class Hydrophone {
 
         Hydrophone h = (Hydrophone) o;
 
-        return Float.compare(latitude, h.latitude) == 0 && Float.compare(longitude, h.longitude) == 0;
+        return latitude.compareTo(h.latitude) == 0 && longitude.compareTo(h.longitude) == 0;
     }
 
     @Override
@@ -29,19 +31,23 @@ public class Hydrophone {
         return latitude + ", " + longitude;
     }
 
-    public float getLatitude() {
+    public String getId() {
+        return id;
+    }
+
+    public String getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(float latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
-    public float getLongitude() {
+    public String getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(float longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 }
